@@ -1,0 +1,17 @@
+
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <app-display class="card-header"
+                    [sentence]="sentence"
+                    ></app-display>
+                <app-keyboard class="card-body"
+                    (sentenceEmiter)="setSentence($event)"
+                    ></app-keyboard>
+            </div>
+        </div>
+        <div class="col-6"></div>
+    </div>
+
+</div>

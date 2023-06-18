@@ -7,7 +7,10 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class DisplayComponent implements OnInit {
 	@Input()
-	sentence: string = "";
+	sentence = {
+		operation: '0',
+		solution: '0'
+	};
 
 	constructor() { }
 

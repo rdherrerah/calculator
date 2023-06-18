@@ -1,65 +1,66 @@
-import { Component, EventEmitter, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+	Component,
+	EventEmitter,
+	OnInit,
+	Output,
+	SimpleChanges
+} from '@angular/core';
+import { Operation } from 'src/model/Operation';
+import { Keys } from 'src/model/constant/Keys';
 
 @Component({
-  selector: 'app-keyboard',
-  templateUrl: './keyboard.component.html',
-  styleUrls: ['./keyboard.component.scss']
+	selector: 'app-keyboard',
+	templateUrl: './keyboard.component.html',
+	styleUrls: ['./keyboard.component.scss']
 })
 export class KeyboardComponent implements OnInit {
 	@Output()
 	sentenceEmiter = new EventEmitter<string>();
-	sentence: string = '0';
-	operators = ['+', '-', '*', '/']
+	@Output()
+	sentenceSolutionEmiter = new EventEmitter<string>();
+	sentence: string = '';
+	sentenceSolution: string = '';
+	operation = new Operation();
 
-	constructor() { }
+	constructor() {}
 
-	ngOnInit(): void {
-	}
+	ngOnInit(): void {}
 
 	insertKey(key: string): void {
-		console.log(key);
-		// validate initialize
-		if(this.sentence !== '0'){
-			// validate operator
-			if(this.operators.includes(key)){
-				if(key === '-' && this._isNewNumber(this.sentence))
-					this.sentence = this.sentence.concat(key);
-				else
-					this.sentence = this.sentence.concat(' '.concat(key.concat(' ')));
-			} else 
-				this.sentence = this.sentence.concat(key);
-		}
-		if(this.sentence === '0')
-			// validate operator
-			if(this.operators.includes(key))
-				if(key === '-')
-					this.sentence = '-0';
-				else
-					this.sentence === this.sentence.concat(' '.concat(key.concat(' ')));
-			else
-				this.sentence = key
+		this.operation.insertValue(key);
+		this.sentence = this.operation.toString();
+		this.sentenceEmiter.emit(this.sentence);
+	}
+
+	deleteSentence(): void {
+		this.operation = new Operation();
+		this.sentence = this.operation.toString();
 		this.sentenceEmiter.emit(this.sentence);
 	}
 
 	deleteKey(): void {
-		if (
-			this.sentence.length === 1 
-			|| (this.sentence.length === 2 && this.sentence.substring(1,1) === '-')
-		)
-			this.sentence = '0';
-		if(this.sentence.length > 1){
-			if(this.operators.includes(this.sentence.substring(this.sentence.length-3).trim()))
-				this.sentence = this.sentence.slice(0,-3);
-			else
-				this.sentence = this.sentence.slice(0,-1);
-		}
+		this.operation.deleteLastValue();
+		this.sentence = this.operation.toString();
+		console.log(this.operation);
 		this.sentenceEmiter.emit(this.sentence);
 	}
 
-	private _isNewNumber(text: string): boolean{
-		if(text.substring(text.length-3)[0] === ' ' && text.substring(text.length-3)[2] === ' ')
-			return true;
-		return false;
+	negativeNumber(): void {
+		this.operation.insertValue(Keys.SYMBOL_NUMBER.NEGATIVE);
+		this.sentence = this.operation.toString();
+		this.sentenceEmiter.emit(this.sentence);
 	}
 
+	pointNumber(): void {
+		this.operation.insertValue(Keys.SYMBOL_NUMBER.POINT);
+		this.sentence = this.operation.toString();
+		this.sentenceEmiter.emit(this.sentence);
+	}
+
+	result(): void {
+		this.sentenceSolution = this.operation.getSolution().toString();
+		this.sentenceSolutionEmiter.emit(this.sentenceSolution);
+	}
+
+	temp(): void {}
 }

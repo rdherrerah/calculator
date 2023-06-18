@@ -1,6 +1,7 @@
 import {
 	BigNumber,
 	bignumber,
+	boolean,
 	compare,
 	equal,
 	mod} from 'mathjs';
@@ -178,6 +179,7 @@ export class Operation {
 	}
 
 	getSolution(): BigNumber {
+		if (!this.hasOperator()) return this.firstNumber;
 		Object.values(Operator).forEach((e:{symbol:string ,solve: Function}) =>{
 			if (e.symbol === this.operator){
 				this.solution = e.solve(

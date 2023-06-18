@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { HistoryOperation } from 'src/model/HistoryOperation';
 
 @Component({
 	selector: 'app-calculator',
@@ -10,6 +11,7 @@ export class CalculatorComponent implements OnInit {
 		operation: '0',
 		solution: '0'
 	};
+	historyOfSolution: HistoryOperation[] = [];
 
 	constructor() {}
 
@@ -21,5 +23,9 @@ export class CalculatorComponent implements OnInit {
 
 	setSentenceSolution(solution: string): void {
 		this.sentence.solution = solution;
+	}
+
+	addOperation(historyOperation: HistoryOperation): void {
+		this.historyOfSolution.push(historyOperation);
 	}
 }

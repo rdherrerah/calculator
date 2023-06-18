@@ -24,6 +24,7 @@
     "bootstrap-icons": "^1.10.5",
     "jquery": "^3.7.0",
     "mathjs": "^11.8.1",
+    "moment": "^2.29.4",
     "popper.js": "^1.16.1",
     "rxjs": "~7.5.0",
     "zone.js": "~0.11.4"
@@ -45,8 +46,8 @@
     "karma-jasmine-html-reporter": "~2.0.0",
     "prettier": "^2.8.8",
     "prettier-eslint": "^15.0.1",
-    "tslib": "^2.5.3",
     "rxjs": "~7.5.0",
+    "tslib": "^2.5.3",
     "typescript": "~4.7.2"
   }
 }

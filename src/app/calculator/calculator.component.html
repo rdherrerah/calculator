@@ -7,12 +7,17 @@
                     [sentence]="sentence"
                     ></app-display>
                 <app-keyboard class="card-body"
-                    (sentenceEmiter)="setSentenceOperation($event)"
-                    (sentenceSolutionEmiter)="setSentenceSolution($event)"
+                    (sentenceEmitter)="setSentenceOperation($event)"
+                    (sentenceSolutionEmitter)="setSentenceSolution($event)"
+                    (operationToSaveEmitter)="addOperation($event)"
                     ></app-keyboard>
             </div>
         </div>
-        <div class="col-6"></div>
+        <div class="col-6">
+            <app-history
+                [historyOperation]="historyOfSolution"
+            ></app-history>
+        </div>
     </div>
 
 </div>

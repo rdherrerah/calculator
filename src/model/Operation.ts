@@ -1,8 +1,6 @@
 import {
 	BigNumber,
 	bignumber,
-	boolean,
-	compare,
 	equal,
 	mod} from 'mathjs';
 import { Keys } from './constant/Keys';
@@ -25,7 +23,11 @@ export class Operation {
 	) {
 		if (!equal(firstNumber, 0)) {
 			this.firstNumber = bignumber(firstNumber);
-			this.isFirstNumberNegative = compare(firstNumber, 0) == -1;
+			this.isFirstNumberNegative = this.firstNumber.lessThan(0);
+			this.firstNumber =
+				this.firstNumber.greaterThan(0)
+					? this.firstNumber
+					: this.firstNumber.times(-1);
 			this.hasDecimalFirstNumber = !equal(
 				mod(bignumber(firstNumber), 1),
 				0
@@ -33,7 +35,10 @@ export class Operation {
 		}
 		if (!equal(secondNumber, 0)) {
 			this.secondNumber = bignumber(secondNumber);
-			this.isSecondNumberNegative = compare(secondNumber, 0) == -1;
+			this.isSecondNumberNegative = this.secondNumber.lessThan(0);
+			this.secondNumber = this.secondNumber.greaterThan(0)
+				? this.secondNumber
+				: this.secondNumber.times(-1);
 			this.hasDecimalSecondNumber = !equal(
 				mod(bignumber(secondNumber), 1),
 				0
@@ -61,7 +66,7 @@ export class Operation {
 
 	deleteLastValue() {
 		if (this.hasOperator()) {
-			if (!equal(this.secondNumber, 0)) {
+			if (!equal(this.secondNumber, 0) || this.hasDecimalSecondNumber) {
 				this.secondNumber = this.deleteNumber('S', this.secondNumber);
 			} else {
 				this.deleteOperator();
@@ -183,8 +188,12 @@ export class Operation {
 		Object.values(Operator).forEach((e:{symbol:string ,solve: Function}) =>{
 			if (e.symbol === this.operator){
 				this.solution = e.solve(
-					this.firstNumber,
-					this.secondNumber
+					this.isFirstNumberNegative
+						? this.firstNumber.times(-1)
+						: this.firstNumber,
+					this.isSecondNumberNegative
+						? this.secondNumber.times(-1)
+						: this.secondNumber
 				);
 			}
 		})
@@ -192,32 +201,26 @@ export class Operation {
 	}
 
 	toString(): string {
-		return (this.isFirstNumberNegative ? '-' : '')
-			.concat(this.firstNumber.toString())
-			.concat(
-				this.hasDecimalFirstNumber &&
-					equal(mod(this.firstNumber, 1), 0)
-					? '.0'
-					: ''
-			)
+		return this.numberToString(this.firstNumber,this.isFirstNumberNegative,this.hasDecimalFirstNumber)
 			.concat(
 				Keys.BASIC_OPERATOR.includes(this.operator)
 					? ' '.concat(this.operator).concat(' ')
 					: ''
 			)
-			.concat(this.isSecondNumberNegative ? '-' : '')
 			.concat(
-				!equal(this.secondNumber, 0)
-					? this.secondNumber.toString()
-					: this.hasOperator()
-						? '0'
-						: ''
-			)
-			.concat(
-				this.hasDecimalSecondNumber &&
-					equal(mod(this.secondNumber, 1), 0)
-					? '.0'
+				!equal(this.secondNumber, 0) || this.hasOperator()
+					? this.numberToString(this.secondNumber,this.isSecondNumberNegative,this.hasDecimalSecondNumber)
 					: ''
-			);
+			)
+	}
+
+	numberToString(value: BigNumber, isNegative: boolean, isDecimal: boolean): string {
+		const symbol = isNegative ? '-' : '';
+		let number = '';
+		if (isDecimal)
+			if (!equal(mod(value, 1), 0)) number = value.toFixed(6).toString();
+			else number = value.toFixed(1).toString();
+		else number = value.toString();
+		return symbol.concat(number);
 	}
 }

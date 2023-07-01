@@ -3,6 +3,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { HistoryOperation } from 'src/model/HistoryOperation';
 import { Operation } from 'src/model/Operation';
 import { Keys } from 'src/model/constant/Keys';
+import { equal, mod } from 'mathjs';
 
 @Component({
 	selector: 'app-keyboard',
@@ -56,7 +57,9 @@ export class KeyboardComponent implements OnInit {
 	}
 
 	result(): void {
-		this.sentenceSolution = this.operation.getSolution().toString();
+		this.sentenceSolution = equal(mod(this.operation.getSolution(), 1), 0)
+			? this.operation.getSolution().toString()
+			: this.operation.getSolution().toFixed(6).toString();
 		this.operationToSaveEmitter.emit(
 			new HistoryOperation(
 				this.operation,
@@ -65,7 +68,7 @@ export class KeyboardComponent implements OnInit {
 			)
 		);
 		this.sentenceSolutionEmitter.emit(this.sentenceSolution);
-		this.operation = new Operation(this.sentenceSolution);
+		this.operation = new Operation(this.operation.getSolution().toString());
 		this.updateSentence();
 	}
 

@@ -66,6 +66,13 @@ describe('KeyboardComponent', () => {
 			let sentence = component.sentence;
 			expect(sentence).toBe('32 * 2');
 		});
+		it('press key 2 when exist sentence with operator 32 * 1.2', () => {
+			component.operation = new Operation('32', '*', '1.2');
+			const key = '2';
+			component.insertKey(key);
+			let sentence = component.sentence;
+			expect(sentence).toBe('32 * 1.220000');
+		});
 		describe('And Key is an operator', () => {
 			beforeEach(() => {
 				fixture = TestBed.createComponent(KeyboardComponent);
@@ -208,19 +215,19 @@ describe('KeyboardComponent', () => {
 			let sentence = component.sentence;
 			expect(sentence).toBe('3');
 		});
-		it('press key <= when exist sentence 3.2 + 6.0', () => {
+		it('press key <= when exist sentence 3.200000 + 6.0', () => {
 			component.operation = new Operation('3.2','+','6');
 			component.pointNumber();
 			component.deleteKey();
 			let sentence = component.sentence;
-			expect(sentence).toBe('3.2 + 6');
+			expect(sentence).toBe('3.200000 + 6');
 		});
-		it('press key <= when exist sentence 3.2 + 6.4', () => {
+		it('press key <= when exist sentence 3.200000 + 6.4', () => {
 			component.operation = new Operation('3.2', '+', '6.4');
 			component.pointNumber();
 			component.deleteKey();
 			let sentence = component.sentence;
-			expect(sentence).toBe('3.2 + 6.0');
+			expect(sentence).toBe('3.200000 + 6.0');
 		});
 	});
 
